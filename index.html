@@ -83,6 +83,10 @@
         .hide {
             display: none;
         }
+
+        *{
+            font-family: Arial, Helvetica, sans-serif;
+        }
     </style>
 </head>
 
@@ -94,24 +98,27 @@
         <div id="verde" class="color verde right" data-color="verde"></div>
         <button id="btnEmpezar" class="btn-start" onclick="empezarJuego()">Empezar a jugar!</button>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <script>
         const celeste = document.getElementById('celeste')
         const violeta = document.getElementById('violeta')
         const naranja = document.getElementById('naranja')
         const verde = document.getElementById('verde')
         const btnEmpezar = document.getElementById('btnEmpezar')
-        const ULTIMO_NIVEL = 10
+        const ULTIMO_NIVEL = 3
 
         class Juego {
             constructor() {
                 this.inicializar()
                 this.generarSecuencia()
-                this.siguienteNivel()
+                setTimeout(this.siguienteNivel, 1000);
             }
 
             inicializar() {
                 this.siguienteNivel= this.siguienteNivel.bind(this)
                 this.elegirColor= this.elegirColor.bind(this)
+                this.ganoElJuego = this.ganoElJuego.bind(this)
+                this.perdioElJuego = this.perdioElJuego.bind(this)
                 btnEmpezar.classList.add('hide')
             }
 
@@ -200,16 +207,36 @@
                         this.nivel++
                         this.eliminarEventosClick()
                         if(this.nivel === (ULTIMO_NIVEL+1)){
-                            //Ganó
+                            setTimeout(this.ganoElJuego, 1000)
                         }else{
-                            setTimeout(this.siguienteNivel, 2000)
+                            setTimeout(this.siguienteNivel, 1500)
                         }
 
                     }
                 }else{
-                    //perdió
+                    setTimeout(this.perdioElJuego,1000)
                 }
 
+            }
+
+            ganoElJuego(){
+                swal('Simon dice','Felicidades, ganaste el juego, tienes una gran memoria','success')
+                    .then(()=>{
+                        this.eliminarEventosClick()
+                        this.inicializarElJuego()
+                    })
+            }
+
+            perdioElJuego(){
+                swal('Simon dice','Ups, tuviste un pequeño lapsus, ¡Vuelve a intentarlo!','error')
+                    .then(()=>{
+                        this.eliminarEventosClick()
+                        this.inicializarElJuego()
+                    })
+            }
+
+            inicializarElJuego(){
+                btnEmpezar.classList.remove('hide')
             }
         }
 
